@@ -13,7 +13,11 @@ public class MasterMindBase {
 	résultat : un tableau de nb entiers égaux à val
     */
     public static int[] initTab(int nb, int val){
-
+        int[] tab = new int[nb];
+        for (int i = 0; i < nb; i++) {
+            tab[i] = val;
+        }
+        return tab;
     }
 
     //______________________________________________
@@ -22,7 +26,8 @@ public class MasterMindBase {
 	résultat : une copie de tab
     */
     public static int[] copieTab(int[] tab){
-	
+	    int[] tabCopie = new int[tab.length];
+        System.arraycopy(tab, 0, tabCopie, 0, tab.length);
     }
 
     //______________________________________________
