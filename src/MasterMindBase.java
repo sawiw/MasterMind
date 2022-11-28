@@ -53,8 +53,17 @@ public class MasterMindBase {
 	résultat : le plus grand indice d'une case de t contenant c s'il existe, -1 sinon
     */
     public static int plusGrandIndice(char[] t, char c){
-
-        return 0;
+        int max = -1;
+        for (int i = 0; i < t.length ; i++) {
+            if (t[i] == c) {
+                if (max < i) {
+                    max = i;
+                }
+            }
+        }
+        if (max != -1) {
+            return max;
+        }else return -1;
     }
     //______________________________________________
 
@@ -370,6 +379,7 @@ public class MasterMindBase {
         System.out.println(Arrays.toString(tabTEST));
         char[] z = {'q','z','r'};
         System.out.println( listElem(z));
+        System.out.println(plusGrandIndice(z,'z'));;
     } // fin main
 
     //___________________________________________________________________
