@@ -360,7 +360,7 @@ public class MasterMindBase {
     */
     public static void main (String[] args){
         System.out.println(Arrays.toString(initTab(5, 4)));
-   
+   //
     } // fin main
 
     //___________________________________________________________________
