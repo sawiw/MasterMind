@@ -37,7 +37,14 @@ public class MasterMindBase {
 	résultat : la liste des éléments de t entre parenthèses et séparés par des virgules
     */
     public static String listElem(char[] t){
-        return String.format("");
+        StringBuilder liste = new StringBuilder("(");
+        for (int i = 0; i < t.length ; i++) {
+            if (i == t.length - 1) {
+                liste.append(t[i]).append(')');
+            }
+            else liste.append(t[i]).append(',');
+        }
+        return liste.toString();
     }
 
     //______________________________________________
@@ -359,8 +366,10 @@ public class MasterMindBase {
 	   Toute donnée incorrecte doit être re-saisie jusqu'à ce qu'elle soit correcte.
     */
     public static void main (String[] args){
-        System.out.println(Arrays.toString(initTab(5, 4)));
-   //
+        int[] tabTEST = initTab(5, 4);
+        System.out.println(Arrays.toString(tabTEST));
+        char[] z = {'q','z','r'};
+        System.out.println( listElem(z));
     } // fin main
 
     //___________________________________________________________________
