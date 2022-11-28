@@ -28,6 +28,7 @@ public class MasterMindBase {
     public static int[] copieTab(int[] tab){
 	    int[] tabCopie = new int[tab.length];
         System.arraycopy(tab, 0, tabCopie, 0, tab.length);
+        return tabCopie;
     }
 
     //______________________________________________
@@ -36,7 +37,7 @@ public class MasterMindBase {
 	résultat : la liste des éléments de t entre parenthèses et séparés par des virgules
     */
     public static String listElem(char[] t){
-  
+        return String.format("");
     }
 
     //______________________________________________
@@ -45,7 +46,8 @@ public class MasterMindBase {
 	résultat : le plus grand indice d'une case de t contenant c s'il existe, -1 sinon
     */
     public static int plusGrandIndice(char[] t, char c){
- 
+
+        return 0;
     }
     //______________________________________________
 
@@ -54,7 +56,8 @@ public class MasterMindBase {
 	stratégie : utilise la fonction plusGrandIndice
     */
     public static boolean estPresent(char[] t, char c){
- 
+
+        return false;
     }
 
     //______________________________________________
@@ -65,7 +68,8 @@ public class MasterMindBase {
 	stratégie : utilise la fonction plusGrandIndice
     */
     public static boolean elemDiff(char[] t){
- 
+
+        return false;
     }
     
     //______________________________________________
@@ -74,7 +78,8 @@ public class MasterMindBase {
 	résultat : vrai ssi t1 et t2 contiennent la même suite d'entiers
     */
     public static boolean sontEgaux(int[] t1, int[] t2){
- 
+
+        return false;
     }
 
     //______________________________________________
@@ -88,8 +93,9 @@ public class MasterMindBase {
 	résultat : un tableau de lgCode entiers choisis aléatoirement entre 0 et nbCouleurs-1
     */
     public static int[] codeAleat(int lgCode, int nbCouleurs){
-	
-    }      
+
+        return new int[0];
+    }
 
     //____________________________________________________________
     
@@ -98,7 +104,8 @@ public class MasterMindBase {
 	résultat : vrai ssi codMot est correct, c'est-à-dire de longueur lgCode et ne contenant que des éléments de tabCouleurs
     */
     public static boolean codeCorrect(String codMot, int lgCode, char[] tabCouleurs){
-  
+
+        return false;
     }
    
     //____________________________________________________________
@@ -107,7 +114,8 @@ public class MasterMindBase {
 	résultat : le code codMot sous forme de tableau d'entiers en remplaçant chaque couleur par son indice dans tabCouleurs
     */
     public static int[] motVersEntiers(String codMot, char[] tabCouleurs){
- 
+
+        return new int[0];
     }
 
     //____________________________________________________________
@@ -118,7 +126,8 @@ public class MasterMindBase {
 	résultat : le code saisi sous forme de tableau d'entiers
     */
     public static int[] propositionCodeHumain(int nbCoups, int lgCode, char[] tabCouleurs){
-   
+
+        return new int[0];
     }
 
     //____________________________________________________________
@@ -129,6 +138,7 @@ public class MasterMindBase {
     */
     public static int nbBienPlaces(int[] cod1,int[] cod2){
 
+        return 0;
     }
 
     //____________________________________________________________
@@ -138,7 +148,8 @@ public class MasterMindBase {
 	Par exemple, si cod = (1,0,2,0) et nbCouleurs = 6 la fonction retourne (2,1,1,0,0,0)
     */
     public static int[] tabFrequence(int[] cod, int nbCouleurs){
-  
+
+        return cod;
     }
 
     //____________________________________________________________
@@ -149,6 +160,7 @@ public class MasterMindBase {
     */
     public static int nbCommuns(int[] cod1,int[] cod2, int nbCouleurs){
 
+        return nbCouleurs;
     }
 
     //____________________________________________________________
@@ -161,6 +173,7 @@ public class MasterMindBase {
     */
     public static int[] nbBienMalPlaces(int[] cod1,int[] cod2, int nbCouleurs){
 
+        return cod1;
     }
 
 
@@ -179,7 +192,8 @@ public class MasterMindBase {
             - sinon le nombre de codes proposés par le joueur humain          
     */
     public static int mancheHumain(int lgCode, char[] tabCouleurs, int numManche, int nbEssaisMax){
-  
+
+        return lgCode;
     }
 
     //____________________________________________________________
@@ -192,7 +206,8 @@ public class MasterMindBase {
 	résultat : le code cod sous forme de mot d'après le tableau tabCouleurs
     */
     public static String entiersVersMot(int[] cod, char[] tabCouleurs){
- 
+
+        return null;
     }
 
     //___________________________________________________________________
@@ -204,6 +219,7 @@ public class MasterMindBase {
     */
     public static boolean repCorrecte(int[] rep, int lgCode){
 
+        return false;
     }
 
     //___________________________________________________________________
@@ -214,7 +230,8 @@ public class MasterMindBase {
 	résultat : les réponses du joueur humain dans un tableau à 2 entiers
     */
     public static int[] reponseHumain(int lgCode){
- 
+
+        return new int[0];
     }
 
     //___________________________________________________________________
@@ -228,6 +245,7 @@ public class MasterMindBase {
     */
     public static boolean passeCodeSuivantLexico(int[] cod1, int  nbCouleurs){
 
+        return false;
     }
 
     //___________________________________________________________________
@@ -241,8 +259,9 @@ public class MasterMindBase {
             propositions de cod seraient les nbCoups premières réponses de rep resp.
    */
    public static boolean estCompat(int [] cod1, int [][] cod,int [][] rep, int nbCoups, int  nbCouleurs){
- 
-    }
+
+       return false;
+   }
 
     //___________________________________________________________________
 
@@ -257,8 +276,9 @@ public class MasterMindBase {
       sinon met dans cod1 le code ne contenant que des "0" et retourne faux
    */
    public static boolean passeCodeSuivantLexicoCompat(int [] cod1, int [][] cod,int [][] rep, int nbCoups, int  nbCouleurs){
-  
-    }
+
+       return false;
+   }
 
     //___________________________________________________________________
     
@@ -274,7 +294,8 @@ public class MasterMindBase {
             - sinon le nombre de codes proposés par l'ordinateur
     */
     public static int mancheOrdinateur(int lgCode,char[] tabCouleurs, int numManche, int nbEssaisMax) {
-  
+
+        return lgCode;
     }
 
     //___________________________________________________________________
@@ -290,8 +311,9 @@ public class MasterMindBase {
 	résultat : l'entier strictement positif saisi
     */
     public static int saisirEntierPositif(){
-	
- 
+
+
+        return 0;
     }
 
     //___________________________________________________________________
@@ -302,7 +324,8 @@ public class MasterMindBase {
 	résultat : l'entier pair strictement positif saisi
     */
     public static int saisirEntierPairPositif(){
-	
+
+        return 0;
     }
 
     //___________________________________________________________________
@@ -314,7 +337,8 @@ public class MasterMindBase {
 	résultat : le tableau des initiales des noms de couleurs saisis
     */
     public static char[] saisirCouleurs(){
-  
+
+        return new char[0];
     }
 
     //___________________________________________________________________
@@ -335,7 +359,7 @@ public class MasterMindBase {
 	   Toute donnée incorrecte doit être re-saisie jusqu'à ce qu'elle soit correcte.
     */
     public static void main (String[] args){
-	
+        System.out.println(Arrays.toString(initTab(5, 4)));
    
     } // fin main
 
