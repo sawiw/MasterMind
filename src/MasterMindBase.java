@@ -56,14 +56,10 @@ public class MasterMindBase {
         int max = -1;
         for (int i = 0; i < t.length ; i++) {
             if (t[i] == c) {
-                if (max < i) {
-                    max = i;
-                }
+                max = i;
             }
         }
-        if (max != -1) {
-            return max;
-        }else return -1;
+        return max;
     }
     //______________________________________________
 
@@ -72,8 +68,7 @@ public class MasterMindBase {
 	stratégie : utilise la fonction plusGrandIndice
     */
     public static boolean estPresent(char[] t, char c){
-
-        return false;
+            return plusGrandIndice(t,c) != -1;
     }
 
     //______________________________________________
@@ -84,7 +79,13 @@ public class MasterMindBase {
 	stratégie : utilise la fonction plusGrandIndice
     */
     public static boolean elemDiff(char[] t){
-
+        for (int i = 0; i < t.length; i++) {
+            int pgi = plusGrandIndice(t, t[i]);
+            if (pgi != i) {
+                System.out.println("Le doublon " + t[i] + " est présent deux fois dans le tableau aux indices (" + i + ',' + pgi + ')');
+                return true;
+            }
+        }
         return false;
     }
     
@@ -375,11 +376,12 @@ public class MasterMindBase {
 	   Toute donnée incorrecte doit être re-saisie jusqu'à ce qu'elle soit correcte.
     */
     public static void main (String[] args){
-        int[] tabTEST = initTab(5, 4);
-        System.out.println(Arrays.toString(tabTEST));
-        char[] z = {'q','z','r'};
-        System.out.println( listElem(z));
-        System.out.println(plusGrandIndice(z,'z'));;
+//        int[] tabTEST = initTab(5, 4);
+//        System.out.println(Arrays.toString(tabTEST));
+        char[] z = {'q','z','z','z'};
+//        System.out.println( listElem(z));
+//        System.out.println(plusGrandIndice(z,'z'));;
+        System.out.println(elemDiff(z));
     } // fin main
 
     //___________________________________________________________________
