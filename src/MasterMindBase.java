@@ -128,8 +128,18 @@ public class MasterMindBase {
 	action : si codMot n'est pas correct, affiche pourquoi
 	résultat : vrai ssi codMot est correct, c'est-à-dire de longueur lgCode et ne contenant que des éléments de tabCouleurs
     */
-    public static boolean codeCorrect(String codMot, int lgCode, char[] tabCouleurs){
-
+    public static boolean codeCorrect(String codMot, int lgCode, char[] tabCouleurs) {
+        if (codMot.length() == lgCode) {
+            for (int i = 0; i <= codMot.length() - 1; i++) {
+                for (char tabCouleur : tabCouleurs) {
+                    if (codMot.charAt(i) == tabCouleur) {
+//                        System.out.println("present");
+                        if (i == codMot.length() - 1) return true;
+//                    } else System.out.println("absent");
+                    }
+                }
+            }
+        }
         return false;
     }
    
@@ -386,16 +396,19 @@ public class MasterMindBase {
     public static void main (String[] args){
 //        int[] tabTEST = initTab(5, 4);
 //        System.out.println(Arrays.toString(tabTEST));
-        char[] z = {'q','z','z','z'};
-//        System.out.println( listElem(z));
-//        System.out.println(plusGrandIndice(z,'z'));;
-        System.out.println(elemDiff(z));
-        int[] test = codeAleat(5,8);
-        for (int j : test) {
-            System.out.print(j);
-        }
+////       System.out.println( listElem(z));
+////        System.out.println(plusGrandIndice(z,'z'));;
+//        System.out.println(elemDiff(z));
+//        int[] test = codeAleat(5,8);
+//        for (int j : test) {
+//            System.out.print(j);
+        char[] z = {'a','r','v','b'};
+        String c = "rrab";
+        int lg = 4;
+
+        System.out.println(codeCorrect(c,lg,z));
+
     } // fin main
 
     //___________________________________________________________________
-    
 } // fin MasterMindBase
