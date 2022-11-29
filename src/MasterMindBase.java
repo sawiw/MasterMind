@@ -95,8 +95,12 @@ public class MasterMindBase {
 	résultat : vrai ssi t1 et t2 contiennent la même suite d'entiers
     */
     public static boolean sontEgaux(int[] t1, int[] t2){
-
-        return false;
+        for (int i = 0; i < t1.length; i++) {
+            if (t1[i] != t2[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     //______________________________________________
@@ -110,8 +114,12 @@ public class MasterMindBase {
 	résultat : un tableau de lgCode entiers choisis aléatoirement entre 0 et nbCouleurs-1
     */
     public static int[] codeAleat(int lgCode, int nbCouleurs){
-
-        return new int[0];
+        int[] tab = new int[lgCode];
+        for (int i = 0; i < tab.length; i++) {
+            int random = (int) (Math.random() * nbCouleurs);
+            tab[i] = random;
+        }
+        return tab;
     }
 
     //____________________________________________________________
@@ -382,6 +390,10 @@ public class MasterMindBase {
 //        System.out.println( listElem(z));
 //        System.out.println(plusGrandIndice(z,'z'));;
         System.out.println(elemDiff(z));
+        int[] test = codeAleat(5,8);
+        for (int j : test) {
+            System.out.print(j);
+        }
     } // fin main
 
     //___________________________________________________________________
