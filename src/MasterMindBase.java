@@ -53,13 +53,13 @@ public class MasterMindBase {
 	résultat : le plus grand indice d'une case de t contenant c s'il existe, -1 sinon
     */
     public static int plusGrandIndice(char[] t, char c){
-        int max = -1;
+        int indexMax = -1;
         for (int i = 0; i < t.length ; i++) {
             if (t[i] == c) {
-                max = i;
+                indexMax = i;
             }
         }
-        return max;
+        return indexMax;
     }
     //______________________________________________
 
@@ -114,12 +114,12 @@ public class MasterMindBase {
 	résultat : un tableau de lgCode entiers choisis aléatoirement entre 0 et nbCouleurs-1
     */
     public static int[] codeAleat(int lgCode, int nbCouleurs){
-        int[] tab = new int[lgCode];
-        for (int i = 0; i < tab.length; i++) {
-            int random = (int) (Math.random() * nbCouleurs);
-            tab[i] = random;
+        Random aleatoire = new Random();
+        int[] code = new int[lgCode];
+        for (int i = 0; i < lgCode; i++) {
+            code[i] = aleatoire.nextInt(nbCouleurs);
         }
-        return tab;
+        return code;
     }
 
     //____________________________________________________________
@@ -399,14 +399,18 @@ public class MasterMindBase {
 ////       System.out.println( listElem(z));
 ////        System.out.println(plusGrandIndice(z,'z'));;
 //        System.out.println(elemDiff(z));
-//        int[] test = codeAleat(5,8);
-//        for (int j : test) {
-//            System.out.print(j);
-        char[] z = {'a','r','v','b'};
-        String c = "rrab";
-        int lg = 4;
-
-        System.out.println(codeCorrect(c,lg,z));
+        for (int i = 0; i < 10; i++) {
+            int[] test = codeAleat(2,5);
+            for (int j : test) {
+                System.out.print(j);
+            }
+            System.out.println();
+        }
+//        char[] z = {'a','r','v','b'};
+//        String c = "rrab";
+//        int lg = 4;
+//
+//        System.out.println(codeCorrect(c,lg,z));
 
     } // fin main
 
