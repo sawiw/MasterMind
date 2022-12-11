@@ -346,16 +346,11 @@ public class MM {
      * @Résultat vrai ssi rep est correct, c'est-à-dire rep[0] et rep[1] sont >= 0 et leur somme est <= lgCode
      */
     public static boolean repCorrecte(int[] rep, int lgCode) {
-        if (rep[0] < 0 || rep[1] < 0) {
-            System.out.println("Erreur : Le nombre de bien placés et/ou de mal placés est négatif");
-            return false;
+        if ((rep[0] >= 0 && rep[1] >= 0) && (rep[0] + rep[1] <= lgCode)) {
+            return true;
         }
-        if (rep[0] + rep[1] > lgCode) {
-            System.out.println("Erreur : La somme du nombre de bien placés et de mal placés est supérieure à la longueur du code");
-            return false;
-        }
-
-        return true;
+        System.out.println("La réponse n'est pas correcte. Vérifiez que les valeurs de rep[0] et rep[1] soient >= 0 et que leur somme soit <= lgCode");
+        return false;
     }
 
 
@@ -371,9 +366,9 @@ public class MM {
         int[] rep = new int[lgCode];
         do {
             System.out.println("Entrez le nombre de bien placés");
-            rep[0] = Ut.saisirCaractere();
+            rep[0] = Ut.saisirEntier();
             System.out.println("Entrez le nombre de mal placés");
-            rep[1] = Ut.saisirCaractere();
+            rep[1] = Ut.saisirEntier();
         } while (!repCorrecte(rep, lgCode));
         return rep;
     }
@@ -455,14 +450,56 @@ public class MM {
     /**
      * @Pré-requis numManche >= 2
      * @Action effectue la (numManche)ème  manche où l'humain est le codeur et l'ordinateur le décodeur
-     * (le @Pré-requisètre numManche ne sert que pour l'affichage)
+     * (le pré-requis numManche ne sert que pour l'affichage)
      * @Résultat - 0 si le programme détecte une erreur dans les réponses du joueur humain
      * - un nombre supérieur à nbEssaisMax, calculé à partir du dernier essai de l'ordinateur (cf. sujet),
      * s'il n'a toujours pas trouvé au bout du nombre maximum d'essais
      * - sinon le nombre de codes proposés par l'ordinateur
      */
     public static int mancheOrdinateur(int lgCode, char[] tabCouleurs, int numManche, int nbEssaisMax) {
-     return 0;
+        // Afficher le numéro de la manche
+        System.out.println("Manche " + numManche + " : Humain (Codeur) vs Ordinateur (Décodeur)");
+        // Initialiser les variables pour stocker les codes et les réponses de l'ordinateur
+        int[][] cod = new int[nbEssaisMax][lgCode];
+        int[][] rep = new int[nbEssaisMax][2];
+        // Initialiser le 1er code de l'orderinateur à 0
+        cod[0] = initTab(lgCode, 0);
+        // Afficher le 1er code de l'ordinateur
+        // Répéter les essais de l'ordinateur jusqu'à ce qu'il trouve le code secret
+        int nbEssais = 0;
+        while (nbEssais < nbEssaisMax) {
+            // Afficher le code proposé par l'ordinateur
+            System.out.println(entiersVersMot(cod[nbEssais], tabCouleurs));
+            // Demander au joueur humain de saisir les réponses à l'essai de l'ordinateur
+            int[] reponse = reponseHumain(lgCode);
+            // Vérifier si la réponse est valide
+            if (reponse == null || !repCorrecte(reponse, lgCode)) {
+                // Retourner 0 si le joueur humain a saisi des réponses incorrectes
+                return 0;
+            }
+            // Stocker la réponse du joueur humain
+            rep[nbEssais] = reponse;
+            // Vérifier si l'ordinateur a trouvé le code secret
+            if (reponse[0] == lgCode) {
+                // Retourner le nombre d'essais de l'ordinateur
+                return nbEssais + 1;
+            }
+            // Passer au code suivant de l'ordinateur
+            if (!passeCodeSuivantLexicoCompat(cod[nbEssais + 1], cod, rep, nbEssais + 1, tabCouleurs.length)) {
+                // Retourner un nombre supérieur à nbEssaisMax si l'ordinateur n'a pas trouvé le code secret
+                return nbEssaisMax + 1;
+            }
+            // Vérifier si le code suivant est valide
+            if (cod[nbEssais] == null) {
+                // Retourner un nombre supérieur à nbEssaisMax si l'ordinateur n'a pas trouvé le code secret au bout du nombre maximum d'essais
+                return nbEssaisMax + 1;
+            }
+            // Incrémenter le nombre d'essais de l'ordinateur
+            nbEssais++;
+        }
+
+        // Retourner le nombre d'essais de l'ordinateur si le code secret n'a pas été trouvé au bout du nombre maximum d'essais
+        return nbEssais;
     }
 
     //___________________________________________________________________
@@ -515,15 +552,36 @@ public class MM {
      * @Résultat le tableau des initiales des noms de couleurs saisis
      */
     public static char[] saisirCouleurs() {
-//        int nbCouleurs = saisirEntierPositif();
-//        char[] tabCouleurs = new char[nbCouleurs];
-//        for (int i = 0; i < nbCouleurs; i++) {
-//            do {
-//                tabCouleurs[i] = Ut.saisirCaractere();
-//            } while (Ut.position(tabCouleurs, tabCouleurs[i]) != i);
-//        }
-//        return tabCouleurs;
-        return new char[]{'R', 'V', 'B', 'J', 'N', 'M'};
+        // Saisir le nombre de couleurs
+        int nbCouleurs = saisirEntierPositif();
+        // Initialiser le tableau des initiales des noms de couleurs
+        char[] tabCouleurs = new char[nbCouleurs];
+        // Saisir les noms de couleurs
+        for (int i = 0; i < nbCouleurs; i++) {
+            // Saisir le nom de la couleur
+            System.out.println("Veuillez saisir le nom de la couleur " + (i + 1));
+            String nomCouleur = Ut.saisirChaine();
+            // Vérifier si le nom de la couleur est valide
+            if (nomCouleur.length() == 0 || nomCouleur.length() > 1) {
+                // Afficher un message d'erreur
+                System.out.println("Le nom de la couleur doit être une lettre");
+                // Répéter la saisie de la couleur
+                i--;
+                continue;
+            }
+            // Stocker l'initiale du nom de la couleur
+            tabCouleurs[i] = nomCouleur.charAt(0);
+            // Vérifier si l'initiale du nom de la couleur est valide
+            if (i > 0 && tabCouleurs[i] == tabCouleurs[i - 1]) {
+                // Afficher un message d'erreur
+                System.out.println("Les initiales des noms de couleurs doivent être différentes");
+                // Répéter la saisie de la couleur
+                i--;
+                continue;
+            }
+        }
+        // Retourner le tableau des initiales des noms de couleurs saisis
+        return tabCouleurs;
     }
 
     //___________________________________________________________________
@@ -548,7 +606,31 @@ public class MM {
      */
 
     public static void main(String[] args) {
-        
+        int lgCode = 4;
+        char[] tabCouleurs = {'V', 'B', 'J', 'R'};
+        int numManche = 2;
+        int nbEssaisMax = 20;
+
+        // Cas où le code secret est généré aléatoirement
+        int res = mancheOrdinateur(lgCode, tabCouleurs, numManche, nbEssaisMax);
+        if (res > 0 && res <= nbEssaisMax) {
+            System.out.println("La manche a été jouée avec succès en " + res + " essais");
+        } else if (res == 0) {
+            System.out.println("Erreur : le joueur humain a saisi des réponses incorrectes");
+        } else {
+            System.out.println("Erreur : le code secret n'a pas été trouvé au bout du nombre maximum d'essais");
+        }
+
+//        // Cas où le code secret est fixé manuellement
+//        int[] codeSecret = {0, 1, 2, 3};
+//        res = mancheOrdinateur(lgCode, tabCouleurs, numManche, nbEssaisMax);
+//        if (res > 0 && res <= nbEssaisMax) {
+//            System.out.println("La manche a été jouée avec succès en " + res + " essais");
+//        } else if (res == 0) {
+//            System.out.println("Erreur : le joueur humain a saisi des réponses incorrectes");
+//        } else {
+//            System.out.println("Erreur : le code secret n'a pas été trouvé au bout du nombre maximum d'essais");
+//        }
     } // fin main
 
 }
