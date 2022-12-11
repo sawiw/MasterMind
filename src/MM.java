@@ -303,17 +303,31 @@ public class MM {
      * - sinon le nombre de codes proposés par le joueur humain
      */
     public static int mancheHumain(int lgCode, char[] tabCouleurs, int numManche, int nbEssaisMax) {
-        int[] code = {0, 1, 2, 3};
+        int[] code = codeAleat(lgCode, tabCouleurs.length);
         int nbEssais = 0;
+        System.out.println("********************************************");
+        System.out.println("Manche : " + numManche);
+        System.out.println("L'ordinateur a choisi un code de " + lgCode + " couleurs parmi " + tabCouleurs.length + " couleurs possibles.");
+        System.out.println("Les couleurs possibles sont : " + listElem(tabCouleurs));
+        System.out.println("Vous devez le trouver en " + nbEssaisMax + " essais maximum.");
         while (nbEssais < nbEssaisMax){
-            System.out.println("Manche : " + numManche);
+            System.out.println("********************************************");
             System.out.println("Vous avez " + (nbEssaisMax - nbEssais) + " essais");
             int[] proposition = saisirCode(nbEssais, lgCode, tabCouleurs);
             int[] resultat = nbBienMalPlaces(code, proposition, tabCouleurs.length);
+            if (resultat[0] == lgCode) {
+                System.out.println("Bravo, vous avez trouvé le code en " + (nbEssais + 1) + " essais !");
+                return nbEssais + 1;
+            }
             System.out.println("Résultat : " + resultat[0] + " bien placé(s) et " + resultat[1] + " mal placé(s)");
             //Si le code est trouvé
             if (resultat[0] == lgCode) return nbEssais + 1;
             nbEssais++;
+            if (nbEssais == nbEssaisMax) {
+                System.out.println("Vous avez épuisé le nombre d'essais maximum.");
+                System.out.println("Le code était : " + entiersVersMot(code, tabCouleurs));
+                return nbEssais + 1  ;
+            }
         }
         //Si le code n'est pas trouvé
         return nbEssais;
@@ -348,6 +362,9 @@ public class MM {
     public static boolean repCorrecte(int[] rep, int lgCode) {
         if ((rep[0] >= 0 && rep[1] >= 0) && (rep[0] + rep[1] <= lgCode)) {
             return true;
+        } else if (rep.length != 2) {
+            System.out.println("La réponse n'est pas correcte. Vérifiez que rep a une longueur de 2.");
+            return false;
         }
         System.out.println("La réponse n'est pas correcte. Vérifiez que les valeurs de rep[0] et rep[1] soient >= 0 et que leur somme soit <= lgCode");
         return false;
@@ -365,9 +382,9 @@ public class MM {
     public static int[] reponseHumain(int lgCode) {
         int[] rep = new int[lgCode];
         do {
-            System.out.println("Entrez le nombre de bien placés");
+            System.out.print("Entrez le nombre de bien placés : ");
             rep[0] = Ut.saisirEntier();
-            System.out.println("Entrez le nombre de mal placés");
+            System.out.print("Entrez le nombre de mal placés : ");
             rep[1] = Ut.saisirEntier();
         } while (!repCorrecte(rep, lgCode));
         return rep;
@@ -468,8 +485,9 @@ public class MM {
         // Répéter les essais de l'ordinateur jusqu'à ce qu'il trouve le code secret
         int nbEssais = 0;
         while (nbEssais < nbEssaisMax) {
+            System.out.println("********** Essai " + (nbEssais + 1) + " **********");
             // Afficher le code proposé par l'ordinateur
-            System.out.println(entiersVersMot(cod[nbEssais], tabCouleurs));
+            System.out.println("Proposition de l'ordinateur : " + entiersVersMot(cod[nbEssais], tabCouleurs));
             // Demander au joueur humain de saisir les réponses à l'essai de l'ordinateur
             int[] reponse = reponseHumain(lgCode);
             // Vérifier si la réponse est valide
@@ -488,9 +506,12 @@ public class MM {
             if (!passeCodeSuivantLexicoCompat(cod[nbEssais + 1], cod, rep, nbEssais + 1, tabCouleurs.length)) {
                 // Retourner un nombre supérieur à nbEssaisMax si l'ordinateur n'a pas trouvé le code secret
                 return nbEssaisMax + 1;
+            } else {
+                // Incrémenter le nombre d'essais de l'ordinateur
+                nbEssais++;
             }
             // Vérifier si le code suivant est valide
-            if (cod[nbEssais] == null) {
+            if (estCompat(cod[nbEssais + 1], cod, rep, nbEssais + 1, tabCouleurs.length)) {
                 // Retourner un nombre supérieur à nbEssaisMax si l'ordinateur n'a pas trouvé le code secret au bout du nombre maximum d'essais
                 return nbEssaisMax + 1;
             }
@@ -518,7 +539,7 @@ public class MM {
     public static int saisirEntierPositif() {
         int n;
         do {
-            System.out.println("Veillez saisir un entier strictement positif");
+            System.out.print("Veillez saisir un entier strictement positif : ");
             n = Ut.saisirEntier();
         } while (n <= 0);
         return n;
@@ -535,7 +556,7 @@ public class MM {
     public static int saisirEntierPairPositif() {
         int n;
         do {
-            System.out.println("Veuillez saisir un entier pair strictement positif");
+            System.out.print("Veuillez saisir un entier pair strictement positif : ");
             n = Ut.saisirEntier();
         } while (n <= 0 || n % 2 != 0);
         return n;
@@ -559,12 +580,12 @@ public class MM {
         // Saisir les noms de couleurs
         for (int i = 0; i < nbCouleurs; i++) {
             // Saisir le nom de la couleur
-            System.out.println("Veuillez saisir le nom de la couleur " + (i + 1));
+            System.out.print("Veuillez saisir le nom de la couleur " + (i + 1) + " : ");
             String nomCouleur = Ut.saisirChaine();
             // Vérifier si le nom de la couleur est valide
-            if (nomCouleur.length() == 0 || nomCouleur.length() > 1) {
+            if (nomCouleur.length() <= 0) {
                 // Afficher un message d'erreur
-                System.out.println("Le nom de la couleur doit être une lettre");
+                System.out.println("Le nom de la couleur doit être une Mot non vide !");
                 // Répéter la saisie de la couleur
                 i--;
                 continue;
@@ -606,31 +627,59 @@ public class MM {
      */
 
     public static void main(String[] args) {
-        int lgCode = 4;
-        char[] tabCouleurs = {'V', 'B', 'J', 'R'};
-        int numManche = 2;
-        int nbEssaisMax = 20;
+       //Demande à l'utilisateur de saisir les pré-requis de la partie
+        System.out.println("*********************************************");
+        System.out.println("*** Bienvenue dans le jeu Mastermind ***");
+        System.out.println("*********************************************");
+        System.out.println("Pré-requis de la partie :");
+        System.out.println("*********************************************");
+        System.out.println("Veuillez saisir la longueur du code");
+        int lgCode = saisirEntierPositif();
+        System.out.println("*********************************************");
+        System.out.println("Veuillez saisir le nombre de couleurs");
+        char[] tabCouleurs = saisirCouleurs();
+        System.out.println("*********************************************");
+        System.out.println("Veuillez saisir le nombre de manches");
+        int nbManches = saisirEntierPairPositif();
+        System.out.println("*********************************************");
+        System.out.println("Veuillez saisir le nombre d'essais maximum");
+        int nbEssaisMax = saisirEntierPositif();
+        System.out.println("*********************************************");
 
-        // Cas où le code secret est généré aléatoirement
-        int res = mancheOrdinateur(lgCode, tabCouleurs, numManche, nbEssaisMax);
-        if (res > 0 && res <= nbEssaisMax) {
-            System.out.println("La manche a été jouée avec succès en " + res + " essais");
-        } else if (res == 0) {
-            System.out.println("Erreur : le joueur humain a saisi des réponses incorrectes");
-        } else {
-            System.out.println("Erreur : le code secret n'a pas été trouvé au bout du nombre maximum d'essais");
+        int nbCouleurs = tabCouleurs.length;
+        // Initialiser le nombre de manches gagnées par l'ordinateur
+        int nbManchesGagneesOrdi = 0;
+        // Initialiser le nombre de manches gagnées par le joueur humain
+        int nbManchesGagneesJoueur = 0;
+        // Initialiser le nombre de manches nulles
+        int nbManchesNulles = 0;
+
+        // Effectuer la manche de jeu en fonction de ca valeur
+        for (int numManche = 1; numManche <= nbManches; numManche++) {
+            System.out.println("*********************************************");
+            if (numManche % 2 != 0) {
+                int resultatMancheHumain = mancheHumain(lgCode, tabCouleurs,numManche, nbEssaisMax);
+                System.out.println(resultatMancheHumain);
+            }
+            else {
+                int resultOrdi = mancheOrdinateur(lgCode, tabCouleurs, numManche, nbEssaisMax);
+                if (resultOrdi == 0) {
+                    System.out.println("Erreur dans les réponses du joueur humain.");
+                } else if (resultOrdi > nbEssaisMax) {
+                    System.out.println("L'ordinateur n'a pas trouvé le code en " + nbEssaisMax + " essais.");
+                } else {
+                    System.out.println("L'ordinateur a trouvé le code en " + resultOrdi + " essais.");
+                }
+            }
         }
 
-//        // Cas où le code secret est fixé manuellement
-//        int[] codeSecret = {0, 1, 2, 3};
-//        res = mancheOrdinateur(lgCode, tabCouleurs, numManche, nbEssaisMax);
-//        if (res > 0 && res <= nbEssaisMax) {
-//            System.out.println("La manche a été jouée avec succès en " + res + " essais");
-//        } else if (res == 0) {
-//            System.out.println("Erreur : le joueur humain a saisi des réponses incorrectes");
-//        } else {
-//            System.out.println("Erreur : le code secret n'a pas été trouvé au bout du nombre maximum d'essais");
-//        }
+
+
+        // Afficher le résultat
+        System.out.println("Le joueur humain a gagné " + nbManchesGagneesJoueur + " manches");
+        System.out.println("L'ordinateur a gagné " + nbManchesGagneesOrdi + " manches");
+        System.out.println("Il y a eu " + nbManchesNulles + " manches nulles");
+
     } // fin main
 
 }
