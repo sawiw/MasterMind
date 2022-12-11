@@ -1,6 +1,3 @@
-import java.util.Arrays;
-import java.util.Random;
-
 public class MM {
 
     //.........................................................................
@@ -43,8 +40,8 @@ public class MM {
         StringBuilder liste = new StringBuilder("(");
         for (int i = 0; i < t.length; i++) {
             if (i == t.length - 1) {
-                liste.append(t[i]).append(')');
-            } else liste.append(t[i]).append(',');
+                liste.append(t[i]).append(")");
+            } else liste.append(t[i]).append(",");
         }
         return liste.toString();
     }
@@ -122,10 +119,9 @@ public class MM {
      * @Résultat un tableau de lgCode entiers choisis aléatoirement entre 0 et nbCouleurs-1
      */
     public static int[] codeAleat(int lgCode, int nbCouleurs) {
-        Random aleatoire = new Random();
         int[] code = new int[lgCode];
         for (int i = 0; i < lgCode; i++) {
-            code[i] = aleatoire.nextInt(nbCouleurs);
+            code[i] = Ut.randomMinMax(0, nbCouleurs - 1);
         }
         return code;
     }
@@ -208,8 +204,14 @@ public class MM {
         // Répéter jusqu'à ce que le code soit correct
         do {
             // Demander au joueur de saisir un code
-            System.out.println("Saisissez la " + (nbCoups + 1) + "ème proposition de code :");
-            codMot = Ut.saisirChaine();
+            if (nbCoups == 0) {
+                System.out.println("Saisissez la 1ère proposition de code : ");
+                codMot = Ut.saisirChaine();
+            } else {
+                System.out.println("Saisissez la " + (nbCoups + 1) + "ème proposition de code :");
+                codMot = Ut.saisirChaine();
+            }
+
         } while (!codeCorrect(codMot, lgCode, tabCouleurs));
 
         // Convertir le code en un tableau d'entiers
@@ -222,7 +224,7 @@ public class MM {
     /**
      * @Pré-requis cod1.length = cod2.length
      * @Résultat le nombre d'éléments communs de cod1 et cod2 se trouvant au même indice
-     * @Exemple, si cod1 = (1,0,2,0) et cod2 = (0,1,0,0) la fonction retourne 1 (le "0" à l'indice 3)
+     * @Exemple si cod1 = (1,0,2,0) et cod2 = (0,1,0,0) la fonction retourne 1 (le "0" à l'indice 3)
      */
     public static int nbBienPlaces(int[] cod1, int[] cod2) {
         int bienPlaces = 0;
@@ -237,13 +239,15 @@ public class MM {
     /**
      * @Pré-requis les éléments de cod sont des entiers de 0 à nbCouleurs-1
      * @Résultat un tableau de longueur nbCouleurs contenant à chaque indice i le nombre d'occurrences de i dans cod
-     * @Exemple, si cod = (1,0,2,0) et nbCouleurs = 6 la fonction retourne (2,1,1,0,0,0)
+     * @Exemple si cod = (1,0,2,0) et nbCouleurs = 6 la fonction retourne (2,1,1,0,0,0)
      */
     public static int[] tabFrequence(int[] cod, int nbCouleurs) {
 
         int[] tabFrequence = new int[nbCouleurs];
-        for (int i = 0; i < cod.length; i++) {
+        int i = 0;
+        while (i < cod.length) {
             tabFrequence[cod[i]]++;
+            i++;
         }
         return tabFrequence;
     }
@@ -253,7 +257,7 @@ public class MM {
     /**
      * @Pré-requis les éléments de cod1 et cod2 sont des entiers de 0 à nbCouleurs-1
      * @Résultat le nombre d'éléments communs de cod1 et cod2, indépendamment de leur position
-     * @Exemple, si cod1 = (1,0,2,0) et cod2 = (0,1,0,0) la fonction retourne 3 (2 "0" et 1 "1")
+     * @Exemple si cod1 = (1,0,2,0) et cod2 = (0,1,0,0) la fonction retourne 3 (2 "0" et 1 "1")
      */
     public static int nbCommuns(int[] cod1, int[] cod2, int nbCouleurs) {
         int[] tabFrequence1 = tabFrequence(cod1, nbCouleurs);
@@ -299,18 +303,19 @@ public class MM {
      * - sinon le nombre de codes proposés par le joueur humain
      */
     public static int mancheHumain(int lgCode, char[] tabCouleurs, int numManche, int nbEssaisMax) {
-        int[] code = codeAleat(lgCode, tabCouleurs.length);
+        int[] code = {0, 1, 2, 3};
         int nbEssais = 0;
         while (nbEssais < nbEssaisMax){
             System.out.println("Manche : " + numManche);
-            System.out.println("Essai n°" + (nbEssais + 1));
+            System.out.println("Vous avez " + (nbEssaisMax - nbEssais) + " essais");
             int[] proposition = saisirCode(nbEssais, lgCode, tabCouleurs);
             int[] resultat = nbBienMalPlaces(code, proposition, tabCouleurs.length);
             System.out.println("Résultat : " + resultat[0] + " bien placé(s) et " + resultat[1] + " mal placé(s)");
+            //Si le code est trouvé
             if (resultat[0] == lgCode) return nbEssais + 1;
             nbEssais++;
         }
-
+        //Si le code n'est pas trouvé
         return nbEssais;
     }
 
@@ -325,8 +330,11 @@ public class MM {
      * @Résultat le code cod sous forme de mot d'après le tableau tabCouleurs
      */
     public static String entiersVersMot(int[] cod, char[] tabCouleurs) {
-
-        return null;
+        StringBuilder mot = new StringBuilder();
+        for (int i = 0; i < cod.length; i++) {
+            mot.append(tabCouleurs[cod[i]]);
+        }
+        return mot.toString();
     }
 
     //___________________________________________________________________
@@ -338,9 +346,18 @@ public class MM {
      * @Résultat vrai ssi rep est correct, c'est-à-dire rep[0] et rep[1] sont >= 0 et leur somme est <= lgCode
      */
     public static boolean repCorrecte(int[] rep, int lgCode) {
+        if (rep[0] < 0 || rep[1] < 0) {
+            System.out.println("Erreur : Le nombre de bien placés et/ou de mal placés est négatif");
+            return false;
+        }
+        if (rep[0] + rep[1] > lgCode) {
+            System.out.println("Erreur : La somme du nombre de bien placés et de mal placés est supérieure à la longueur du code");
+            return false;
+        }
 
-        return false;
+        return true;
     }
+
 
     //___________________________________________________________________
 
@@ -351,25 +368,44 @@ public class MM {
      * @Résultat les réponses du joueur humain dans un tableau à 2 entiers
      */
     public static int[] reponseHumain(int lgCode) {
-
-        return new int[0];
+        int[] rep = new int[lgCode];
+        do {
+            System.out.println("Entrez le nombre de bien placés");
+            rep[0] = Ut.saisirCaractere();
+            System.out.println("Entrez le nombre de mal placés");
+            rep[1] = Ut.saisirCaractere();
+        } while (!repCorrecte(rep, lgCode));
+        return rep;
     }
 
     //___________________________________________________________________
 
     /**
-     * CHANGE @Action si le code suivant n'existe pas
-     * ************************************************
-     *
-     * @Pré-requis les éléments de cod1 sont des entiers de 0 à nbCouleurs-1
-     * @Action/@Résultat met dans cod1 le code qui le suit selon l'ordre lexicographique (dans l'ensemble
-     * des codes à valeurs  de 0 à nbCouleurs-1) et retourne vrai si ce code existe,
-     * sinon met dans cod1 le code ne contenant que des "0" et retourne faux
-     */
-    public static boolean passeCodeSuivantLexico(int[] cod1, int nbCouleurs) {
-
-        return false;
+     /**CHANGE : action si le code suivant n'existe pas
+     //     *************************************************
+     //    pré-requis : les éléments de cod1 sont des entiers de 0 à nbCouleurs-1
+     //	   action/résultat : met dans cod1 le code qui le suit selon l'ordre lexicographique (dans l'ensemble
+     //    des codes à valeurs  de 0 à nbCouleurs-1) et retourne vrai si ce code existe,
+     //    sinon met dans cod1 le code ne contenant que des "0" et retourne faux
+     //    */
+    public static boolean passeCodeSuivantLexico(int[] cod1, int  nbCouleurs) {
+        // Trouver l'indice de l'élément le plus à droite qui est différent de nbCouleurs - 1
+        int i = cod1.length - 1;
+        while (i >= 0 && cod1[i] == nbCouleurs - 1) {
+            i--;
+        }
+        // Si aucun élément n'a été trouvé, cela signifie que le code ne peut pas être incrémenté
+        if (i < 0) {
+            return false;
+        }
+        // Incrémenter l'élément trouvé de 1 et mettre tous les éléments suivants à 0
+        cod1[i]++;
+        for (int j = i + 1; j < cod1.length; j++) {
+            cod1[j] = 0;
+        }
+        return true;
     }
+
 
     //___________________________________________________________________
 
@@ -384,8 +420,11 @@ public class MM {
      * propositions de cod seraient les nbCoups premières réponses de rep resp.
      */
     public static boolean estCompat(int[] cod1, int[][] cod, int[][] rep, int nbCoups, int nbCouleurs) {
-
-        return false;
+        for (int i = 0; i < nbCoups; i++) {
+            int[] rep1 = nbBienMalPlaces(cod1, cod[i], nbCouleurs);
+            if (rep1[0] != rep[i][0] || rep1[1] != rep[i][1]) return false;
+        }
+        return true;
     }
 
     //___________________________________________________________________
@@ -403,8 +442,10 @@ public class MM {
      * sinon met dans cod1 le code ne contenant que des "0" et retourne faux
      */
     public static boolean passeCodeSuivantLexicoCompat(int[] cod1, int[][] cod, int[][] rep, int nbCoups, int nbCouleurs) {
-
-        return false;
+        do {
+            if (!passeCodeSuivantLexico(cod1, nbCouleurs)) return false;
+        } while (!estCompat(cod1, cod, rep, nbCoups, nbCouleurs));
+        return true;
     }
 
     //___________________________________________________________________
@@ -421,8 +462,7 @@ public class MM {
      * - sinon le nombre de codes proposés par l'ordinateur
      */
     public static int mancheOrdinateur(int lgCode, char[] tabCouleurs, int numManche, int nbEssaisMax) {
-
-        return lgCode;
+     return 0;
     }
 
     //___________________________________________________________________
@@ -439,9 +479,12 @@ public class MM {
      * @Résultat l'entier strictement positif saisi
      */
     public static int saisirEntierPositif() {
-
-
-        return 0;
+        int n;
+        do {
+            System.out.println("Veillez saisir un entier strictement positif");
+            n = Ut.saisirEntier();
+        } while (n <= 0);
+        return n;
     }
 
     //___________________________________________________________________
@@ -453,8 +496,13 @@ public class MM {
      * @Résultat l'entier pair strictement positif saisi
      */
     public static int saisirEntierPairPositif() {
+        int n;
+        do {
+            System.out.println("Veuillez saisir un entier pair strictement positif");
+            n = Ut.saisirEntier();
+        } while (n <= 0 || n % 2 != 0);
+        return n;
 
-        return 0;
     }
 
     //___________________________________________________________________
@@ -467,8 +515,15 @@ public class MM {
      * @Résultat le tableau des initiales des noms de couleurs saisis
      */
     public static char[] saisirCouleurs() {
-
-        return new char[0];
+//        int nbCouleurs = saisirEntierPositif();
+//        char[] tabCouleurs = new char[nbCouleurs];
+//        for (int i = 0; i < nbCouleurs; i++) {
+//            do {
+//                tabCouleurs[i] = Ut.saisirCaractere();
+//            } while (Ut.position(tabCouleurs, tabCouleurs[i]) != i);
+//        }
+//        return tabCouleurs;
+        return new char[]{'R', 'V', 'B', 'J', 'N', 'M'};
     }
 
     //___________________________________________________________________
@@ -482,6 +537,7 @@ public class MM {
      * CHANGE ajout de le nombre d'essais maximum doit être strictement positif
      * *****************************************************************************
      *
+     * @return
      * @Action demande à l'utilisateur de saisir les pré-requis ètres de la partie (lgCode, tabCouleurs,
      * nbManches, nbEssaisMax),
      * effectue la partie et affiche le résultat (identité du gagnant ou match nul).
@@ -490,42 +546,9 @@ public class MM {
      * Les initiales des noms de couleurs doivent être différentes.
      * Toute donnée incorrecte doit être re-saisie jusqu'à ce qu'elle soit correcte.
      */
+
     public static void main(String[] args) {
-//        // Test 1 :
-//        int lgCode = 4;
-//        char[] tabCouleurs = {'R', 'B', 'V', 'J'};
-//        int numManche = 1;
-//        int nbEssaisMax = 10;
-//        int resultatAttendu = 11;
-//
-//        int resultatObtenu = mancheHumain(lgCode, tabCouleurs, numManche, nbEssaisMax);
-//
-//        if (resultatAttendu == resultatObtenu)
-//        {
-//            System.out.println("Test 1 réussi");
-//        }
-//        else
-//        {
-//            System.out.println("Test 1 échoué");
-//        }
-//
-//        // Test 2 :
-//        lgCode = 5;
-//        char[] tabCouleurs2 = {'R', 'B', 'V', 'J', 'G'};
-//        numManche = 2;
-//        nbEssaisMax = 15;
-//        resultatAttendu = 16;
-//
-//        resultatObtenu = mancheHumain(lgCode, tabCouleurs2, numManche, nbEssaisMax);
-//
-//        if (resultatAttendu == resultatObtenu)
-//        {
-//            System.out.println("Test 2 réussi");
-//        }
-//        else
-//        {
-//            System.out.println("Test 2 échoué");
-//        }
+        
     } // fin main
 
 }
